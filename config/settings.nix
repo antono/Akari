@@ -131,6 +131,8 @@ in
           vim.g.neovide_scale_factor = new
         end
 
+        -- Neovide on Linux often does not forward <C-=>; <C-+> is reliable.
+        vim.keymap.set({"n", "v"}, "<C-+>", function() change_scale(0.1) end)
         vim.keymap.set({"n", "v"}, "<C-=>", function() change_scale(0.1) end)
         vim.keymap.set({"n", "v"}, "<C-->", function() change_scale(-0.1) end)
         vim.keymap.set({"n", "v"}, "<C-0>", function() vim.g.neovide_scale_factor = 1.0 end)
