@@ -26,7 +26,11 @@ lib.mkIf isNotMac {
   extraConfigLua = lib.mkIf config.plugins.codesnap.enable ''
     local codesnap = require("codesnap")
     local config_module = require("codesnap.config")
-    local generator = require("generator")
+    -- codesnap.nvim loads its Rust library by hand (package.loadlib +
+    -- luaopen_generator); the cpath entry it adds is templated ("libs/?") and
+    -- never resolves, so require("generator") errors and aborts the rest of
+    -- init.lua. Go through the plugin's own loader instead.
+    local generator = require("codesnap.module").load_generator()
 
     local static = require("codesnap.static")
     local flat = static.config
