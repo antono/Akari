@@ -9,21 +9,23 @@
     imagemagick
   ];
 
-  plugins = {
-    markdown-preview = {
-      enable = true;
-      autoLoad = true;
-      # Use fork's `markdown-review` branch (pinned commit) instead of upstream.
-      package = pkgs.vimPlugins.markdown-preview-nvim.overrideAttrs (_: {
-        src = pkgs.fetchFromGitHub {
-          owner = "antono";
-          repo = "markdown-preview.nvim";
-          rev = "683b6c4773c8f58d013d6df7739f709f3a6c22fa"; # branch: markdown-review
-          hash = "sha256-o/cs2+roQMqhr+kdeNYsOWvXMR3DBokQE1Zuejmkh8Y=";
-        };
-      });
-    };
+  extraPlugins = [
+    # markdown-review.nvim: fork of markdown-preview.nvim adding review comments.
+    # Overriding the nixpkgs derivation keeps its vendored app/node_modules and
+    # nodejs runtime dependency; only the source is swapped for the fork.
+    (pkgs.vimPlugins.markdown-preview-nvim.overrideAttrs (_: {
+      pname = "markdown-review.nvim";
+      version = "d172217";
+      src = pkgs.fetchFromGitHub {
+        owner = "antono";
+        repo = "markdown-review.nvim";
+        rev = "d172217ec84a288bdab95d11541920dca4932738"; # branch: master
+        hash = "sha256-Awyk4Se1tAb6N59glBz2HA9CSdOg5jqnOsG3NbLGpig=";
+      };
+    }))
+  ];
 
+  plugins = {
     # conform-nvim.settings = {
     #   formatters_by_ft.markdown = [ "deno_fmt" ];
     #
@@ -46,7 +48,7 @@
     {
       mode = "n";
       key = "<leader>mp";
-      action = "<cmd>MarkdownPreviewToggle<cr>";
+      action = "<cmd>MarkdownReviewToggle<cr>";
       options = {
         silent = true;
         desc = "Toggle markdown preview";
